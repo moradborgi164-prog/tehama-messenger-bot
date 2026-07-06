@@ -66,18 +66,31 @@ def ask_ai(message):
         )
 
         raw = response.choices[0].message.content
-        return json.loads(raw)
+
+        log.info(f"AI RAW: {raw}")
+
+        # نحاول نفهم إذا رجع JSON
+        try:
+            return json.loads(raw)
+        except:
+            # لو ما كان JSON، نخليه رد عادي
+            return {
+                "intent": "greeting",
+                "product": None,
+                "governorate": None,
+                "reply": raw,
+                "missing": "none"
+            }
 
     except Exception as e:
-        log.error(f"AI Error: {e}")
+        log.error(f"AI ERROR: {e}")
         return {
             "intent": "unclear",
             "product": None,
             "governorate": None,
-            "reply": "عذراً لم أفهم طلبك، هل تريد قطع غيار أو معدات أو مولدات؟",
+            "reply": "عذرًا، حدث خطأ في الذكاء الاصطناعي.",
             "missing": "both"
         }
-
 # =========================
 # SEND MESSAGE
 # =========================
